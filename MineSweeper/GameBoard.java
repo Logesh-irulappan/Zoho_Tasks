@@ -133,9 +133,25 @@ public class GameBoard {
 
     // player winning check, only when all flags are placed
     public boolean winCheck() {
+        if( !isAllCellsOpened() )
+            return false;
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < n; j++) {
                 if( board[i][j] == -1 && charBoard[i][j] != 'F' )
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    // checking for Unopened cells before going into win checking..
+    public boolean isAllCellsOpened() {
+        int breakCount = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                if( board[i][j] == -1 )
+                    continue;
+                else if( charBoard[i][j] == '*' )
                     return false;
             }
         }
