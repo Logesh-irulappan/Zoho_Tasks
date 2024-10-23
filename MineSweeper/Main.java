@@ -3,7 +3,10 @@ package MineSweeper;
 public class Main {
 
     public static void main(String[] args) {
-        MineSweeper start = new MineSweeper(6);
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter the Board Size: ");
+        int n = in.nextInt();
+        MineSweeper start = new MineSweeper(n);
     }
 
 }
