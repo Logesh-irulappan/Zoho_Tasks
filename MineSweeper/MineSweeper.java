@@ -68,6 +68,7 @@ public class MineSweeper {
 
             if(gb.getFlag() == 0) {
                 if(gb.winCheck()) {
+                    gb.displayCharBoard();
                     System.out.println("YOU WON");
                     break;
                 }
