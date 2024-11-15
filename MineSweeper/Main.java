@@ -1,27 +1,48 @@
 package MineSweeper;
 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class Main {
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+
+        int level = 0, boardSize = 0;
+
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Level (int) 1. Easy    2. Medium    3. Hard  => ");
-        int level = in.nextInt();
-        int n = 0;
+
+        try {
+            level = scanner.nextInt();
+        }
+        catch (InputMismatchException e) {
+            scanner.nextLine();
+            System.out.println("Invalid input, Enter integer type of Choice");
+            main(new String[0]);
+        }
+
         switch (level) {
             case 1: {
-                n = 8;
+                boardSize = 6;
                 break;
             }
             case 2: {
-                n = 12;
+                boardSize = 8;
                 break;
             }
             case 3: {
-                n = 16;
+                boardSize = 10;
                 break;
             }
+            default: {
+                System.out.println("Invalid Chocie");
+                main(new String[0]);
+                return;
+            }
         }
-        MineSweeper game = new MineSweeper(n);
+
+        MineSweeper game = MineSweeper.getInstance(boardSize);
+        game.playGame();
     }
 
 }
