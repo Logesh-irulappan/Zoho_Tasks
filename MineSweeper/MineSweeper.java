@@ -1,38 +1,64 @@
 package MineSweeper;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MineSweeper {
 
-    private GameBoard gb;
+    private GameBoard gameBoard;
+    private Scanner scanner;
 
-    MineSweeper(int n) {
-        gb = new GameBoard(n);
-        playGame();
+    private static MineSweeper instance;
+
+    private MineSweeper(int boardSize) {
+        gameBoard = new GameBoard(boardSize);
+        scanner = new Scanner(System.in);
     }
+
+    public static MineSweeper getInstance(int boardSize) {
+        if (instance == null)
+            instance = new MineSweeper(boardSize);
+        return instance;
+    }
+
 
     public void playGame() {
 
-        Scanner in = new Scanner(System.in);
         boolean firstMove = true;
 
         do {
-            gb.displayCharBoard();
+            gameBoard.displayCharBoard();
 
-            System.out.println("Flags: "+gb.getFlag());
+            System.out.println("Flags: " + gameBoard.getFlag());
             System.out.println(" 1. Touch   2. Flag   3.Quit ");
-            int option = in.nextInt();
 
-            if(option == 3) {
+            // User Option -> Runtime Error Handling
+            int option = 0;
+            try {
+                option = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                scanner.nextLine();
+                continue;
+            }
+
+            // Option -> 3 will exit without getting row and col index from User.
+            if (option == 3) {
                 System.out.println("Thank you, See you again!.");
                 break;
             }
+            // Invalid option check, If true then without getting row and col index from User,
+            // the loop continues to next iteration.
+            else if (option < 1 || option > 3) {
+                System.out.println("Invalid Option");
+                continue;
+            }
 
             System.out.println("Enter row and col (index): ");
-            int r = in.nextInt();
-            int c = in.nextInt();
+            int rowIndex = scanner.nextInt();
+            int colIndex = scanner.nextInt();
 
-            if(!gb.isValidPosition(r, c)) {
+            if (!gameBoard.isValidPosition(rowIndex, colIndex)) {
                 System.out.println("Invalid index Position!..");
                 continue;
             }
@@ -40,41 +66,42 @@ public class MineSweeper {
             switch (option) {
                 case 1: {
                     if (firstMove) {
-                        gb.initializeGameBoard(r, c);
-                        gb.zeroBreak(r, c);
+                        gameBoard.initializeInternalGameBoard(rowIndex, colIndex);
+                        gameBoard.zeroBreak(rowIndex, colIndex);
                         firstMove = false;
                     }
                     else {
-                        if ( gb.isFlagged(r, c) )
+                        if (gameBoard.isFlagged(rowIndex, colIndex))
                             System.out.println("Index is Flagged, UnFlag to touch!");
                         else {
-                            if(gb.isBomb(r, c)) {
-                                gb.openAllBomb();
-                                gb.displayCharBoard();
+                            if (gameBoard.isBomb(rowIndex, colIndex)) {
+                                gameBoard.openAllBomb();
+                                gameBoard.displayCharBoard();
                                 System.out.println("GAME OVER..");
                                 return;
-                            }
-                            else
-                                gb.userMove(r, c);
+                            } else
+                                gameBoard.userMove(rowIndex, colIndex);
                         }
                     }
                     break;
                 }
                 case 2: {
-                    gb.setFlag(r, c);
+                    gameBoard.setFlag(rowIndex, colIndex);
                     break;
                 }
+                default:
+                    break;
             }
 
-            if(gb.getFlag() == 0) {
-                if(gb.winCheck()) {
-                    gb.displayCharBoard();
+            if (gameBoard.getFlag() == 0) {
+                if (gameBoard.winCheck()) {
+                    gameBoard.displayCharBoard();
                     System.out.println("YOU WON");
                     break;
                 }
             }
 
-        } while(true);
+        } while (true);
 
     }
 
